@@ -17,12 +17,35 @@ namespace ConsoleApp1
 
             // Part 1: start the HandleFile method.
             Task<IEnumerable<ParseObject>> task = HandleFileAsync();
-            task.Wait();
-            var x = task.Result;
-            foreach (ParseObject o in x)
+            try
             {
-                Console.WriteLine("{0} - {1}", o["name"], (o["country"] as ParseObject)["name"]);
+                task.Wait();
             }
+            catch (Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message);
+            }
+            var x = task.Result;
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(@"D:\DATA\Trainings\Parse\Back4App\WriteLines2.txt", false, new UTF8Encoding(true)))
+            {
+                file.WriteLine("CityName|CityLatitude|CityLongitude|CountryName|CountryCapital|CountryCode|CountryPhone|CountryCurrency|CountryNativeName");
+                foreach (ParseObject o in x)
+                {
+                    file.WriteLine("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}", 
+                        o["name"],
+                        ((ParseGeoPoint)o["location"]).Latitude,
+                        ((ParseGeoPoint)o["location"]).Longitude,
+                        ((ParseObject)o["country"])["name"],
+                        ((ParseObject)o["country"])["capital"],
+                        ((ParseObject)o["country"])["code"],
+                        ((ParseObject)o["country"])["phone"],
+                        ((ParseObject)o["country"])["currency"],
+                        ((ParseObject)o["country"])["native"]
+                        );
+                }
+            }
+
             ;
         }
 
@@ -56,7 +79,7 @@ namespace ConsoleApp1
                 i += limit;
             }
 
-            return listOfCities;
+           return listOfCities;
         }
     }
 }
