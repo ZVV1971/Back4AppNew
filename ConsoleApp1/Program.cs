@@ -6,6 +6,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Parse;
+using Amazon.S3;
+using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
+using Mono.Options;
 
 namespace ConsoleApp1
 {
@@ -13,8 +17,40 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.OutputEncoding = Encoding.UTF8;
+            //Console.WriteLine("Test program");
 
+            string ak = null;
+            string sk = null;
+            bool help = false;
+            var p = new OptionSet() {
+                "This is a sample program to load data from open source DB into my S3 bucket",
+                { "a|accessKey=", "the {ACCESS_KEY} to the AWS account", v => ak = v},
+                { "s|secretKey=", "the {SECRET_KEY} to the AWS account", v => sk = v},
+                { "h|?|help",      v => help = v != null },
+            };
+
+            List<string> extra;
+            try
+            {
+                extra = p.Parse(args);
+            }
+            catch (Exception e)
+            {
+                return;
+            }
+
+            if (help || String.IsNullOrEmpty(ak)  || String.IsNullOrEmpty(sk))
+            {
+                p.WriteOptionDescriptions(Console.Out);
+                Console.ReadKey();
+                return;
+            }
+
+            var myCreds = new BasicAWSCredentials(ak,sk);
+            AmazonS3Client S3Cl = new AmazonS3Client(myCreds, Amazon.RegionEndpoint.USEast2);
+            var lb= S3Cl.ListBuckets();
+ 
             // Part 1: start the HandleFile method.
             Task<IEnumerable<ParseObject>> task = HandleFileAsync();
             try
