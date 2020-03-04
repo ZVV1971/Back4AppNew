@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,6 +11,14 @@ using Amazon.S3;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Mono.Options;
+using KeePassLib.Interfaces;
+using KeePassLib.Serialization;
+using KeePassLib;
+using KeePassLib.Keys;
+using KeePassLib.Collections;
+using System.Diagnostics;
+using KeePassLib.Security;
+using KeysFromKeePass;
 
 namespace ConsoleApp1
 {
@@ -18,15 +27,18 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            //Console.WriteLine("Test program");
 
             string ak = null;
             string sk = null;
+            string path = null;
+            string group = null;
+            string entry = null;
             bool help = false;
             var p = new OptionSet() {
                 "This is a sample program to load data from open source DB into my S3 bucket",
-                { "a|accessKey=", "the {ACCESS_KEY} to the AWS account", v => ak = v},
-                { "s|secretKey=", "the {SECRET_KEY} to the AWS account", v => sk = v},
+                { "p|kbdxpath=", "The {PATH} to the .KBDX file with credentials", v => path = v},
+                { "g|group=", "The {GROUP} of credentials where Access and Secret Keys will be taken from", v => group = v},
+                { "e|entry=", "The {ENTRY} in the group where needed secret string could be taken from", u => entry = u},
                 { "h|?|help",      v => help = v != null },
             };
 
@@ -40,10 +52,36 @@ namespace ConsoleApp1
                 return;
             }
 
-            if (help || String.IsNullOrEmpty(ak)  || String.IsNullOrEmpty(sk))
+            if (help || String.IsNullOrEmpty(path)  || !File.Exists(path))
             {
                 p.WriteOptionDescriptions(Console.Out);
                 Console.ReadKey();
+                return;
+            }
+
+            Console.Write("Enter password:");
+            ProtectedString pwd = new ProtectedString();
+            while (true)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    break;
+                }
+                if (key.Key == ConsoleKey.Backspace && pwd.Length > 0)
+                {
+                    pwd.Remove(pwd.Length - 1, 1);
+                    continue;
+                }
+                pwd = pwd + key.KeyChar.ToString();
+            }
+
+            ProtectedStringDictionary dict = KeyFromKeePassClass.GetKeysDict(pwd, path, group, entry, new List<string> { "Access Key", "Secret_ Access Key" }, null);
+
+            if (dict.UCount != 2)
+            {
+                Console.WriteLine("Provided KeePass database does not contain necessary keys");
                 return;
             }
 
