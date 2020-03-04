@@ -1,22 +1,38 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using KeePassLib;
+﻿using KeePassLib;
+using KeePassLib.Collections;
+using KeePassLib.Interfaces;
+using KeePassLib.Keys;
 using KeePassLib.Security;
 using KeePassLib.Serialization;
-using KeePassLib.Keys;
-using KeePassLib.Interfaces;
-using KeePassLib.Collections;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace KeysFromKeePass
 {
     public static class KeyFromKeePassClass
     {
-        public static ProtectedStringDictionary GetKeysDict(ProtectedString pwd, string path, string groupName, string entryName
-            , IEnumerable<string> listOfKeys, IStatusLogger logger)
+        /// <summary>
+        /// Opens KeePass database file .kdbx, using password pwd;
+        /// searchs for groupName, finds the entry 
+        /// and then iterates through all strings in the entry
+        /// to find keys, listed in the listOfKeys
+        /// </summary>
+        /// <param name="pwd"></param>
+        /// <param name="path"></param>
+        /// <param name="groupName"></param>
+        /// <param name="entryName"></param>
+        /// <param name="listOfKeys"></param>
+        /// <param name="logger"></param>
+        /// <returns>dictionary of protected strings</returns>
+        public static ProtectedStringDictionary GetKeysDict(
+            ProtectedString pwd,
+            string path,
+            string groupName,
+            string entryName,
+            IEnumerable<string> listOfKeys,
+            IStatusLogger logger)
         {
             //Checks
             if (!File.Exists(path))
@@ -43,10 +59,14 @@ namespace KeysFromKeePass
                         PwObjectList<PwEntry> entries = item.GetEntries(true);
                         foreach (PwEntry eitem in entries)
                         {
+                            //if required entry is found
                             if (eitem.Strings.ReadSafe("Title").Equals(entryName))
                             {
+                                //for each requested key try to find hit among the strings
                                 listOfKeys.ToList().ForEach((string x) => 
                                 {
+                                    //and if there's such non-empty coincidence
+                                    //add it to the protected dictionary
                                     if (!string.IsNullOrEmpty(eitem.Strings.GetKeys().FirstOrDefault(u=> u==x)))
                                     {
                                         dict.Set(x,eitem.Strings.GetSafe(x));
@@ -62,9 +82,7 @@ namespace KeysFromKeePass
 
             }
 
-            
-
             return dict;
-            }
+        }
     }
 }
