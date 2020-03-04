@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{4588D0FD-EB5A-4688-99E0-4304B208F5C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{C175B95D-4FFB-43B0-8C8D-B0A0464A77C5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeysFromKeePass", "KysFromKeePass\KeysFromKeePass.csproj", "{95DC8039-C671-4C7C-81A2-E22A9006B0A1}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{4588D0FD-EB5A-4688-99E0-4304B208F5C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4588D0FD-EB5A-4688-99E0-4304B208F5C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4588D0FD-EB5A-4688-99E0-4304B208F5C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C175B95D-4FFB-43B0-8C8D-B0A0464A77C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C175B95D-4FFB-43B0-8C8D-B0A0464A77C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C175B95D-4FFB-43B0-8C8D-B0A0464A77C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C175B95D-4FFB-43B0-8C8D-B0A0464A77C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95DC8039-C671-4C7C-81A2-E22A9006B0A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95DC8039-C671-4C7C-81A2-E22A9006B0A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95DC8039-C671-4C7C-81A2-E22A9006B0A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
