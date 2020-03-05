@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 
 namespace ExcelTest
 {
@@ -14,18 +10,32 @@ namespace ExcelTest
             Application excelApp = new Application();
             Workbook wbk = excelApp.Workbooks.Open(Filename:args[0],Password: args[1]);
             Worksheet wsht = wbk.Worksheets["Specification"];
+            try
+            {
+                Shape shp = wsht.Shapes.Item(1);
+            }
+            catch
+            {
+                wbk.Close(false);
+                excelApp.Quit();
+            }
+            finally { }
+
             Range rng =  wsht.Range["SpecificationTable"];
             try
             {
-                foreach (Range row in rng.Rows)
+                for (int i = 1; i <= rng.Rows.Count; i++)
                 {
-                    Console.WriteLine("Column:\t{0}\tRule:\t{1}", row[0, 3], row[0, 6]);
+                    Console.WriteLine("Column:\t{0}\tRule:\t{1}", 
+                        Convert.ToString(rng.Cells[i, 4].Value2), 
+                        Convert.ToString(rng.Cells[i, 7].Value2));
                 }
             }
-            catch { }
+            catch (Exception e)
+            { }
             finally
             {
-                wbk.Close();
+                wbk.Close(false);
                 excelApp.Quit();
             }
         }
