@@ -30,8 +30,9 @@ namespace ConsoleApp3
                     }
                 };
                 msg.RequestUri = new Uri(msg.RequestUri + HttpUtility.UrlPathEncode("?name=" + "OQ_PROJECT"));
-                HttpResponseMessage responseMessage = await httpClient.SendAsync(msg);
-                    //.GetAsync(HttpUtility.UrlPathEncode("?name=" + "OQ_PROJECT")).Result;
+
+                HttpResponseMessage responseMessage = GetResponse(httpClient,msg).Result;
+                    
                 result = responseMessage.Content.ToString();
             }
 
@@ -41,6 +42,27 @@ namespace ConsoleApp3
             Console.ReadKey();
 
             // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
+        }
+
+        static async Task<HttpResponseMessage> GetResponse(HttpClient httpClient, HttpRequestMessage msg)
+        {
+            HttpResponseMessage message = null;
+
+            try
+            {
+                message = await httpClient.SendAsync(msg);
+            }
+            catch (Exception ex)
+            {
+                message = new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Headers = { { HttpResponseHeader.ContentType.ToString(), "text/plain" } },
+                    Content = new StringContent(ex.Message)
+                };
+            }
+
+            return message;
         }
     }
 }
