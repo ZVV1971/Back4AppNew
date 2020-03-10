@@ -35,13 +35,8 @@ namespace ConsoleApp3
                     
                 result = responseMessage.Content.ToString();
             }
-
-
-            // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
             Console.WriteLine(result);
             Console.ReadKey();
-
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
         }
 
         static async Task<HttpResponseMessage> GetResponse(HttpClient httpClient, HttpRequestMessage msg)
