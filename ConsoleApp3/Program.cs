@@ -11,7 +11,7 @@ namespace ConsoleApp3
 {
     class Program
     {
-        private static readonly Uri baseUri = new Uri("http://ecsc00a0129f.epam.com:6443/api/public/tdm/v1/");
+        private static readonly Uri baseUri = new Uri("https://parseapi.back4app.com/classes");
         private static string result = null;
 
         static void Main(string[] args)
@@ -21,15 +21,17 @@ namespace ConsoleApp3
                 httpClient.BaseAddress = baseUri;
                 HttpRequestMessage msg = new HttpRequestMessage
                 {
-                    RequestUri = new Uri(httpClient.BaseAddress, "projects"),
+                    RequestUri = new Uri(httpClient.BaseAddress,""),
                     Method = HttpMethod.Get,
                     Headers =
                     {
-                        { HttpRequestHeader.Authorization.ToString(), "Basic " + "VWxhZHppbWlyX1pha2hhcmVua2E6am1sNDIxX0pNTDQyMTM="},
-                        { HttpRequestHeader.Accept.ToString(), "application/json" }
+                        //{ HttpRequestHeader.Authorization.ToString(), "Basic " + "VWxhZHppbWlyX1pha2hhcmVua2E6am1sNDIxX0pNTDQyMTM="},
+                        //{ HttpRequestHeader.Accept.ToString(), "application/json" }
+                        { "X-Parse-Application-Id", "XW0rXBZxcGJcl3zkoWrh3w6bryBpkXnG36CvzOPV" },
+                        { "X-Parse-REST-API-Key", "eOMGmD5HW5sJ0dQqlFYS7sQbVV2cYKJMU8eSWbI9" }
                     }
                 };
-                msg.RequestUri = new Uri(msg.RequestUri + HttpUtility.UrlPathEncode("?name=" + "OQ_PROJECT"));
+                msg.RequestUri = new Uri(msg.RequestUri + "/City?where="+ HttpUtility.UrlEncode("{\"objectId\":\"ETDFsnewML\"}"));
 
                 HttpResponseMessage responseMessage = GetResponse(httpClient,msg).Result;
                     
