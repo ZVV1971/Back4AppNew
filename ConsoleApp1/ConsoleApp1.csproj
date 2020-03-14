@@ -40,7 +40,7 @@
       <HintPath>..\packages\AWSSDK.S3.3.5.0-beta\lib\net45\AWSSDK.S3.dll</HintPath>
     </Reference>
     <Reference Include="KeePassLib">
-      <HintPath>D:\KeePassSource\Build\KeePassLib_Distrib\KeePassLib.dll</HintPath>
+      <HintPath>..\packages\KeePassLib.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Options, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Options.6.6.0.161\lib\net40\Mono.Options.dll</HintPath>

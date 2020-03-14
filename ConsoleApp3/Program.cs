@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace ConsoleApp3
 {
@@ -31,17 +32,34 @@ namespace ConsoleApp3
                         { "X-Parse-REST-API-Key", "eOMGmD5HW5sJ0dQqlFYS7sQbVV2cYKJMU8eSWbI9" }
                     }
                 };
-                msg.RequestUri = new Uri(msg.RequestUri + "/City?where="+ HttpUtility.UrlEncode("{\"objectId\":\"ETDFsnewML\"}"));
+                msg.RequestUri = new Uri(msg.RequestUri + "/City");// +
+                    //"?where="+ HttpUtility.UrlEncode("{\"objectId\":\"ETDFsnewML\"}"));
 
-                HttpResponseMessage responseMessage = GetResponse(httpClient,msg).Result;
-                    
-                result = responseMessage.Content.ToString();
+                string responseMessage = GetResponse(httpClient, msg).Result;
+
+                JObject resp_JSON = JObject.Parse(responseMessage);
+                JToken resp = resp_JSON["results"];
+
+                if (String.IsNullOrEmpty(resp.ToString()))
+                {
+                    result = "Response does not contain any results";
+                }
+
+                JArray arr = JArray.Parse(resp.ToString());
+                result = responseMessage;
+                foreach (JToken item in arr)
+                {
+                    foreach (JProperty tkn in item.Children())
+                    {
+                        Console.WriteLine("Name:\t{0}\tValue:{1}", tkn.Name, tkn.Value.ToString());
+                    }
+                }
             }
             Console.WriteLine(result);
             Console.ReadKey();
         }
 
-        static async Task<HttpResponseMessage> GetResponse(HttpClient httpClient, HttpRequestMessage msg)
+        static async Task<string> GetResponse(HttpClient httpClient, HttpRequestMessage msg)
         {
             HttpResponseMessage message = null;
 
@@ -58,8 +76,8 @@ namespace ConsoleApp3
                     Content = new StringContent(ex.Message)
                 };
             }
-
-            return message;
+            string s = await message.Content.ReadAsStringAsync();
+            return s;
         }
     }
 }
